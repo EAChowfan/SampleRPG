@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Java",
+      "type": "shell",
+      "command": "javac -d bin src/main/*.java src/entity/*.java src/tiles/*.java",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Java",
+      "type": "shell",
+      "command": "java -cp bin main.Main",
+      "group": "test",
+      "dependsOn": "Build Java"
+    }
+  ]
+}

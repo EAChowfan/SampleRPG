@@ -1,33 +1,33 @@
 package main;
 
 
+import entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-
 import javax.swing.JPanel;
+import tiles.TileManager;
+
 
 public class GamePanel extends JPanel implements Runnable {
     final int originalTileSize = 16; //16x16 tile size
     final int scale = 3;
     
-    final int tileSize = originalTileSize * scale;
-    final int maxScreenCol = 16;
-    final int maxScreenRow = 12;
+    public final int tileSize = originalTileSize * scale;
+    public final int maxScreenCol = 16;
+    public final int maxScreenRow = 12;
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
 
     //FPS
     int fps = 60;
 
+    TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
 
-    //playerstuff
-    int playerPosX = 100;
-    int playerPosY = 100;
-    int playerSpeed = 4;
+    Player player = new Player(this, keyH);
 
 
     public GamePanel() {
@@ -36,6 +36,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        tileM.getTileImage();
+        tileM.loadMap("/Res/MapLayout/startMap.txt");
 
     }
 
@@ -78,27 +80,20 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(){
-        if(keyH.upPressed == true){
-            playerPosY -= playerSpeed;
-        }
-        else if (keyH.downPressed == true){
-            playerPosY += playerSpeed;
-        }
-        else if (keyH.leftPressed == true){
-            playerPosX -= playerSpeed;
-        }
-        else if (keyH.rightPressed == true){
-            playerPosX += playerSpeed;
-        }
+        player.update();
     }
 
+    @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D)g;
 
-        g2.setColor(Color.white);
-        g2.fillRect(playerPosX, playerPosY, tileSize, tileSize); //x and y coordinates, size of whatever your drawing
+        //draws Map
+        tileM.draw(g2);
+        //Draw the player
+        player.draw(g2);
+
         g2.dispose();
 
     }
